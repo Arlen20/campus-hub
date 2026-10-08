@@ -1,1 +1,1 @@
-hello (up) world, go (up) is cool
+HELLO (low) world, go (up) is COOL (low)

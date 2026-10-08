@@ -37,6 +37,14 @@ func fix(text string) string {
 			}
 			continue
 		}
+		if w == "(low)" {
+			// TODO 1: если len(result) > 0,
+			if len(result) > 0 {
+				last := len(result) - 1
+				result[last] = strings.ToLower(result[last])
+			}
+			continue
+		}
 		result = append(result, w)
 	}
 	return strings.Join(result, " ")
