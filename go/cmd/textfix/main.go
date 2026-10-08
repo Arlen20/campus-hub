@@ -81,6 +81,33 @@ func fix(text string) string {
 		}
 		result = append(result, w)
 	}
-
+	result = fixPunctuation(result)
 	return strings.Join(result, " ")
+}
+
+func fixPunctuation(words []string) []string {
+	out := []string{}
+
+	for _, w := range words {
+		// считаем, сколько знаков в начале слова
+		k := 0
+		for k < len(w) && strings.ContainsRune(".,!?:;", rune(w[k])) {
+			k++
+		}
+		punct := w[:k] // знаки из начала, например ","
+		rest := w[k:]  // остаток, например "and"
+
+		if punct != "" && len(out) > 0 {
+			out[len(out)-1] += punct
+		} else {
+			rest = w // приклеивать некуда или нечего — оставляем слово целиком
+		}
+
+		// TODO 2: если rest не пустой, добавь его в out
+		if rest != "" {
+			out = append(out, rest)
+		}
+	}
+
+	return out
 }
