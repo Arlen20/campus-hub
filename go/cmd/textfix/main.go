@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"strconv"
 )
 
 func main() {
@@ -43,7 +44,8 @@ func fix(text string) string {
 	words := strings.Fields(text)
 	result := []string{}
 
-	for _, w := range words {
+	for i:=0;i<len(words);i++ {
+		w := words[i]
 		if w == "(up)" || w == "(low)" || w == "(cap)" {
 			if len(result) > 0 {
 				mode := strings.Trim(w, "()")   // "(up)" → "up"
@@ -51,6 +53,17 @@ func fix(text string) string {
 				result[last] = transform(result[last], mode)
 			}
 			continue
+		}
+		if (w == "(up," || w == "(low," || w == "(cap,") && i+1 < len(words) {
+			mode := strings.Trim(w, "(,")
+			n,err := strconv.Atoi(strings.TrimSuffix(words[i+1], ")"))
+			if err ==nil{
+				for j:= len(result)-n;j<len(result);j++{
+					result[j] = transform(result[j], mode)
+				}
+				i++
+				continue
+			}
 		}
 		result = append(result, w)
 	}
