@@ -46,6 +46,20 @@ func fix(text string) string {
 
 	for i:=0;i<len(words);i++ {
 		w := words[i]
+		if w == "(hex)" || w == "(bin)" {
+			if len(result) > 0 {
+				base := 16
+				if w == "(bin)" {
+					base = 2
+				}
+				last := len(result) - 1
+				n, err := strconv.ParseInt(result[last], base, 64)
+				if err == nil {                                     
+					result[last] = strconv.FormatInt(n, 10)         
+				}  
+			}
+			continue
+		}
 		if w == "(up)" || w == "(low)" || w == "(cap)" {
 			if len(result) > 0 {
 				mode := strings.Trim(w, "()")   // "(up)" → "up"
