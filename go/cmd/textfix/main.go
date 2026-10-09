@@ -81,6 +81,7 @@ func fix(text string) string {
 		}
 		result = append(result, w)
 	}
+	result = fixArticles(result)
 	result = fixPunctuation(result)
 	return strings.Join(result, " ")
 }
@@ -110,4 +111,22 @@ func fixPunctuation(words []string) []string {
 	}
 
 	return out
+}
+
+func fixArticles(words []string) []string {
+	for i := 0; i < len(words); i++ {
+		if (words[i] == "a" || words[i] == "A") && i+1 < len(words) {
+			next := words[i+1]
+			if strings.ContainsRune("aeiouhAEIOUH", rune(next[0])) {
+				// TODO: если words[i] == "a", замени на "an"
+				if words[i] == "a"{
+					words[i] = "an"
+				}else {
+					words[i] = "An"
+				}
+				//       если words[i] == "A", замени на "An"
+			}
+		}
+	}
+	return words
 }
