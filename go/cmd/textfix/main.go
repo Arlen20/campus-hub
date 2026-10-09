@@ -5,6 +5,7 @@ import (
 	"os"
 	"strings"
 	"strconv"
+	"sort"
 )
 
 func main() {
@@ -19,11 +20,12 @@ func main() {
 	}
 	text := fix(string(data))
 	err = os.WriteFile(os.Args[2], []byte(text), 0644)
-	fmt.Println("Language:", detectLanguage(text))
 	if err != nil {
 		fmt.Println("ошибка:", err)
 		return
 	}
+	fmt.Println("Language:", detectLanguage(text))
+	fmt.Println("Keywords:", strings.Join(topKeywords(text, 5), ", "))
 }
 
 func transform(word string, mode string) string {
@@ -203,10 +205,49 @@ func detectLanguage(text string) string {
 	}
 	if fr > en {
 		return "French"
-	}else{
-		return "English"
 	}
+	return "English"
+	
 	// если fr > en           → верни "French"
 	// иначе                  → верни "English"
 	return ""
+}
+
+var stopWords = map[string]bool{
+	"the": true, "a": true, "an": true, "is": true, "are": true, "was": true,
+	"and": true, "or": true, "of": true, "to": true, "in": true, "on": true,
+	"it": true, "this": true, "that": true, "i": true, "you": true, "he": true,
+	"she": true, "we": true, "they": true, "with": true, "for": true,
+	"le": true, "la": true, "les": true, "et": true, "est": true, "un": true,
+	"une": true, "de": true, "des": true, "je": true, "il": true, "elle": true,
+	"sur": true, "très": true,
+}
+
+func topKeywords(text string, n int) []string {
+	counts := map[string]int{}
+
+	for _, w := range strings.Fields(strings.ToLower(text)) {
+		w = strings.Trim(w, ".,!?:;'")
+		if w == "" || stopWords[w] { // пустое или мусорное — пропускаем
+			continue
+		}
+		counts[w]++ // считаем слово
+	}
+
+	keys := []string{}
+	for w := range counts {
+		keys = append(keys, w)
+	}
+
+	sort.Slice(keys, func(i, j int) bool {
+		if counts[keys[i]] != counts[keys[j]] {
+			return counts[keys[i]] > counts[keys[j]]
+		}
+		return keys[i] < keys[j]
+	})
+
+	if len(keys) > n { // слов больше, чем нужно — обрезаем
+		keys = keys[:n]
+	}
+	return keys
 }
