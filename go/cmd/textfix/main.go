@@ -73,7 +73,9 @@ func fix(text string) string {
 			n,err := strconv.Atoi(strings.TrimSuffix(words[i+1], ")"))
 			if err ==nil{
 				for j:= len(result)-n;j<len(result);j++{
-					result[j] = transform(result[j], mode)
+					if j >= 0 {
+						result[j] = transform(result[j], mode)
+					}
 				}
 				i++
 				continue
@@ -83,6 +85,7 @@ func fix(text string) string {
 	}
 	result = fixArticles(result)
 	result = fixPunctuation(result)
+	result = fixQuotes(result)
 	return strings.Join(result, " ")
 }
 
@@ -129,4 +132,33 @@ func fixArticles(words []string) []string {
 		}
 	}
 	return words
+}
+
+func fixQuotes(words []string) []string {
+	out := []string{}
+	open := false
+
+	for i := 0; i < len(words); i++ {
+		w := words[i]
+
+		if w == "'" {
+			if !open && i+1 < len(words) {
+				// открывающая: приклеиваем к следующему слову
+				words[i+1] = "'" + words[i+1]
+				open = true
+				continue
+			}
+			if open && len(out) > 0 {
+				// TODO 1: закрывающая — приклей "'" к последнему слову в out
+				out[len(out)-1] += "'"
+				open = false
+				// TODO 2: поставь флажок обратно в false
+				continue
+			}
+		}
+
+		out = append(out, w)
+	}
+
+	return out
 }
