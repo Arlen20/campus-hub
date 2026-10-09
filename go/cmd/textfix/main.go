@@ -19,6 +19,7 @@ func main() {
 	}
 	text := fix(string(data))
 	err = os.WriteFile(os.Args[2], []byte(text), 0644)
+	fmt.Println("Language:", detectLanguage(text))
 	if err != nil {
 		fmt.Println("ошибка:", err)
 		return
@@ -161,4 +162,51 @@ func fixQuotes(words []string) []string {
 	}
 
 	return out
+}
+
+var englishWords = map[string]bool{
+	"the": true, "and": true, "is": true, "of": true, "to": true,
+	"in": true, "it": true, "you": true, "that": true, "with": true,
+}
+
+var frenchWords = map[string]bool{
+	"le": true, "la": true, "les": true, "et": true, "est": true,
+	"un": true, "une": true, "de": true, "des": true, "je": true,
+}
+
+func detectLanguage(text string) string {
+	en := 0
+	fr := 0
+
+	// 1. считаем частые слова
+	for _, w := range strings.Fields(strings.ToLower(text)) {
+		w = strings.Trim(w, ".,!?:;'")
+		if englishWords[w] == true {
+			en++
+		}
+		if frenchWords[w] == true {
+			fr++
+		}
+	}
+
+	// 2. считаем буквы с акцентами
+	for _, r := range text {
+		if strings.ContainsRune("éèêàçùôîâëï", r) {
+			fr++
+		}
+	}
+
+	// TODO 2:
+	// если en == 0 и fr == 0 → верни "Unknown"
+	if en == 0 && fr == 0 {
+		return "Unknown"
+	}
+	if fr > en {
+		return "French"
+	}else{
+		return "English"
+	}
+	// если fr > en           → верни "French"
+	// иначе                  → верни "English"
+	return ""
 }
