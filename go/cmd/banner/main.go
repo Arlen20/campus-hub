@@ -7,6 +7,12 @@ import (
 )
 
 func main() {
+	if len(os.Args) != 2 {
+		fmt.Println(`usage: banner "text"`)
+		return
+	}
+	text := os.Args[1]
+	
 	data, err := os.ReadFile("standard.txt")
 	if err != nil {
 		fmt.Println("ошибка:", err)
@@ -16,14 +22,26 @@ func main() {
 	content := strings.ReplaceAll(string(data), "\r\n", "\n")
 	lines := strings.Split(content, "\n")
 
-	ch := '!'
+	parts := strings.Split(text, "\\n")
 
-	// TODO 1: посчитай start по формуле
-	start := (int(ch) - 32) * 9 + 1
-	for i := 0; i < 8; i++{
-		fmt.Println(lines[start+i])
+
+	for _, part := range parts {
+		if part == "" {
+			fmt.Println()
+		}else{
+			printBanner(part,lines)
+		}
 	}
+}
 
-	// TODO 2: напечатай 8 строк, начиная с lines[start]
-	// подсказка: цикл for i := 0; i < 8; i++ и fmt.Println(lines[start+i])
+
+func printBanner(word string, lines []string){
+	for row := 0; row < 8; row++ {          // для каждой из 8 строк
+		line := ""
+		for _, ch := range word {           // пройти по всем буквам
+			start := (int(ch)-32)*9 + 1
+			line += lines[start+row]        // приклеить кусок этой буквы
+		}
+		fmt.Println(line)                   // напечатать собранную строку
+	}
 }
