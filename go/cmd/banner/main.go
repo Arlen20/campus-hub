@@ -24,6 +24,12 @@ func main() {
 
 	parts := strings.Split(text, "\\n")
 
+	for _, ch := range text {
+		if ch < 32 || ch > 126 {
+			fmt.Printf("ошибка: символ %q не поддерживается\n", ch)
+			return
+		}	
+	}
 
 	for _, part := range parts {
 		if part == "" {
