@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"unicode"
 )
 
 func main() {
@@ -38,6 +39,7 @@ func main() {
 			printBanner(part,lines)
 		}
 	}
+	analyze(text)
 }
 
 
@@ -50,4 +52,37 @@ func printBanner(word string, lines []string){
 		}
 		fmt.Println(line)                   // напечатать собранную строку
 	}
+}
+
+func analyze(text string) {
+	clean := strings.ReplaceAll(text, "\\n", "")
+	upper, lower, digits, special := 0, 0, 0, 0
+
+	for _, ch := range clean {
+		if unicode.IsUpper(ch) {
+			upper++
+		} else if unicode.IsLower(ch) {
+			lower++
+		} else if unicode.IsDigit(ch) {
+			digits++
+		} else{
+			special++
+		}
+	}
+
+	mixed := "no"
+
+	if upper > 0 && lower > 0 {
+		mixed = "yes"
+	}
+
+	complexity := lower*1 + upper*2 + digits*2 + special*3
+
+	fmt.Println()
+	fmt.Println("Uppercase:", upper)
+	fmt.Println("Lowercase:", lower)
+	fmt.Println("Digits:   ", digits)
+	fmt.Println("Special:  ", special)
+	fmt.Println("Mixed case:", mixed)
+	fmt.Println("Complexity:", complexity)
 }
