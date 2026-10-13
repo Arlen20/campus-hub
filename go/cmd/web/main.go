@@ -1,4 +1,4 @@
-package main 
+package main
 
 import (
 	"fmt"
@@ -6,6 +6,10 @@ import (
 )
 
 func home(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
 	fmt.Fprint(w, "Hello from Campus Hub!")
 }
 
@@ -18,7 +22,7 @@ func main() {
 	http.HandleFunc("/about", aboutpage)
 
 	fmt.Println("Сервер запущен: http://localhost:8080")
-	err := http.ListenAndServe(":8080" , nil)
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		fmt.Println("ошибка:", err)
 	}
