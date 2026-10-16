@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -28,7 +29,7 @@ type response struct {
 	} `json:"candidates"`
 }
 
-func Ask(prompt string) (string, error) {
+func askOnce(prompt string) (string, error) {
 	key := os.Getenv("GEMINI_API_KEY")
 	if key == "" {
 		return "", errors.New("GEMINI_API_KEY не задан")
@@ -76,4 +77,26 @@ func Ask(prompt string) (string, error) {
 	}
 	// достаём текст из матрёшки (как p2.Name, только глубже)
 	return r.Candidates[0].Content.Parts[0].Text, nil
+}
+
+func Ask(promt string) (string, error) {
+	var lastErr error
+	for attemt := 1; attemt <= 3; attemt++ {
+		answer, err := askOnce(promt)
+		if err == nil {
+			return answer, nil
+		}
+		lastErr = err
+
+		msg := err.Error()
+		if !strings.Contains(msg, "503") && !strings.Contains(msg, "429") && !strings.Contains(msg, "Timeout") {
+			return "", err
+		}
+
+		wait := time.Duration(attemt*2) * time.Second
+		fmt.Println("Gemini занят, жду", wait, "и пробую снова...")
+		time.Sleep(wait)
+	}
+	return "", lastErr
+
 }
