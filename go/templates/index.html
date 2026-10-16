@@ -1,18 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{.Title}}</title>
+	<meta charset="UTF-8">
+	<title>{{.Title}}</title>
 </head>
 <body>
-    <h1>{{.Title}}</h1>
+	<h1>{{.Title}}</h1>
 
-    <form method="POST" action="/ascii-art">
-        <textarea name="text" rows="4" cols="40"></textarea>
-        <br>
-        <button type="submit">Нарисовать</button>
-    </form>
-    
-    <pre>{{.Banner}}</pre>
+	<form method="POST" action="/ascii-art">
+		<textarea name="text" rows="4" cols="40"></textarea>
+		<br>
+		<button type="submit">Нарисовать</button>
+	</form>
+
+	<pre>{{.Banner}}</pre>
+
+	<h2>Нужна идея?</h2>
+	<form method="POST" action="/suggest">
+		<input type="text" name="theme" placeholder="тема, например space">
+		<button type="submit">Идеи</button>
+	</form>
+
+	{{if .Suggestions}}
+	<h3>Идеи от ИИ:</h3>
+	<pre>{{.Suggestions}}</pre>
+	{{end}}
 </body>
 </html>
