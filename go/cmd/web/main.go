@@ -9,12 +9,36 @@ import (
 
 	"github.com/Arlen20/campus-hub/go/internal/banner"
 	"github.com/Arlen20/campus-hub/go/internal/llm"
+	"github.com/Arlen20/campus-hub/go/internal/tour"
 )
 
 type PageData struct {
 	Title       string
 	Banner      string
 	Suggestions string
+}
+type BandsData struct {
+	Artists []tour.Artist
+}
+
+func bands(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "405 Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	artists, err := tour.GetArtists()
+	if err != nil {
+		http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	tmpl, err := template.ParseFiles("templates/bands.html")
+	if err != nil {
+		http.Error(w, "500 Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	tmpl.Execute(w, BandsData{Artists: artists})
 }
 
 func asciiArt(w http.ResponseWriter, r *http.Request) {
@@ -120,6 +144,7 @@ func main() {
 	http.HandleFunc("/about", aboutpage)
 	http.HandleFunc("/ascii-art", asciiArt)
 	http.HandleFunc("/suggest", suggest)
+	http.HandleFunc("/bands", bands)
 
 	fmt.Println("Сервер запущен: http://localhost:8080")
 	err := http.ListenAndServe(":8080", nil)

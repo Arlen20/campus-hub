@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Tour Track</title>
+</head>
+<body>
+	<h1>Tour Track</h1>
+	<p>Групп: {{len .Artists}}</p>
+
+	{{range .Artists}}
+	<div>
+		<img src="{{.Image}}" width="150">
+		<h2>{{.Name}}</h2>
+		<p>Создана: {{.CreationDate}}</p>
+		<p>Первый альбом: {{.FirstAlbum}}</p>
+		<ul>
+			{{range .Members}}
+			<li>{{.}}</li>
+			{{end}}
+		</ul>
+	</div>
+	<hr>
+	{{end}}
+</body>
+</html>
