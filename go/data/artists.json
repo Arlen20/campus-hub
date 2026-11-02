@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "image": "https://picsum.photos/seed/neon/300",
+    "name": "Neon Steppe",
+    "members": ["Aibek Nurlan", "Dana Sultan", "Timur Ali"],
+    "creationDate": 2015,
+    "firstAlbum": "12-03-2017"
+  },
+  {
+    "id": 2,
+    "image": "https://picsum.photos/seed/taraz/300",
+    "name": "Taraz Echo",
+    "members": ["Arman Bek", "Aliya Serik"],
+    "creationDate": 2009,
+    "firstAlbum": "01-09-2011"
+  },
+  {
+    "id": 3,
+    "image": "https://picsum.photos/seed/gopher/300",
+    "name": "Gopher Beats",
+    "members": ["Rob Pike", "Ken Thompson", "Robert Griesemer", "Russ Cox"],
+    "creationDate": 2012,
+    "firstAlbum": "28-03-2012"
+  }
+]
